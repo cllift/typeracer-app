@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeRacer.Client", "TypeRacer.Client\TypeRacer.Client.csproj", "{37C2B130-A4A0-4839-A1FC-15B428F01D39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeRacer.Server", "TypeRacer.Server\TypeRacer.Server.csproj", "{541AD6D1-0DAA-4FC4-A178-C9D015E7D6AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeRacer.Shared", "TypeRacer.Shared\TypeRacer.Shared.csproj", "{3CC53B47-3ADE-412F-ACDB-50B400487D26}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37C2B130-A4A0-4839-A1FC-15B428F01D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37C2B130-A4A0-4839-A1FC-15B428F01D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37C2B130-A4A0-4839-A1FC-15B428F01D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37C2B130-A4A0-4839-A1FC-15B428F01D39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{541AD6D1-0DAA-4FC4-A178-C9D015E7D6AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{541AD6D1-0DAA-4FC4-A178-C9D015E7D6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{541AD6D1-0DAA-4FC4-A178-C9D015E7D6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{541AD6D1-0DAA-4FC4-A178-C9D015E7D6AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CC53B47-3ADE-412F-ACDB-50B400487D26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CC53B47-3ADE-412F-ACDB-50B400487D26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CC53B47-3ADE-412F-ACDB-50B400487D26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CC53B47-3ADE-412F-ACDB-50B400487D26}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

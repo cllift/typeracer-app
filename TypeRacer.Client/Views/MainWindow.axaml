@@ -1,0 +1,102 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TypeRacer.Client.ViewModels"
+        x:Class="TypeRacer.Client.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="TypeRacer"
+        Background="#3E3C4E"> <Grid>
+        <Border Width="420"
+                Padding="40"
+                CornerRadius="20"
+                Background="#231F2E" 
+                BorderBrush="#3FFFFFFF"
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+            <StackPanel Spacing="28">
+                <Image Source="avares://TypeRacer.Client/Assets/Images/TypeRacer.png"
+                       Width="180"
+                       Height="180"
+                       HorizontalAlignment="Center"
+                       Stretch="Uniform"/>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="JOIN ROOM"
+                               Foreground="White" 
+                               FontSize="26"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+                    <Separator Background="#725AC1" Width="40" Height="3" HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Spacing="20">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="PLAYER NAME" Foreground="#9BA1AD" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding PlayerName}"
+                                 Watermark="Enter Username"
+                                 Height="48"
+                                 Background="#343042"
+                                 BorderThickness="0"
+                                 Foreground="White"
+                                 CornerRadius="8"
+                                 VerticalContentAlignment="Center"
+                                 Padding="12,0"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="ROOM CODE" Foreground="#9BA1AD" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding RoomCode}"
+                                 Watermark="Enter Room Code"
+                                 Height="48"
+                                 Background="#343042"
+                                 BorderThickness="0"
+                                 Foreground="White"
+                                 CornerRadius="8"
+                                 VerticalContentAlignment="Center"
+                                 Padding="12,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Button Content="JOIN ROOM"
+                        Command="{Binding JoinRoomCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="#725AC1"
+                        Foreground="White"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Height="52"
+                        CornerRadius="10">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Setter Property="Transitions">
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+                                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                                </Transitions>
+                            </Setter>
+                        </Style>
+                        
+                        <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="#8D79D3" />
+                            <Setter Property="RenderTransform" Value="scale(1.02)" />
+                            <Setter Property="TextBlock.Foreground" Value="White" />
+                        </Style>
+                        
+                        <Style Selector="Button:pressed">
+                            <Setter Property="RenderTransform" Value="scale(0.97)" />
+                        </Style>
+                    </Button.Styles>
+                </Button>
+
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="#9BA1AD"
+                           FontSize="12"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

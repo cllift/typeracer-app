@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TypeRacer.Client.ViewModels"
+        x:Class="TypeRacer.Client.Views.LobbyView"
+        x:DataType="vm:LobbyViewModel"
+        Title="Lobby"
+        Background="#3E3C4E"
+        Width="900"
+        Height="600">
+
+    <Grid>
+        <Border Width="500"
+                Padding="40"
+                CornerRadius="20"
+                Background="#231F2E"
+                BorderBrush="#3FFFFFFF"
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+            <StackPanel Spacing="24">
+
+                <TextBlock Text="LOBBY"
+                           Foreground="#725AC1"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="{Binding RoomCodeDisplay}"
+                           Foreground="White"
+                           FontSize="16"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="PLAYERS"
+                           Foreground="#9BA1AD"
+                           FontSize="12"
+                           FontWeight="SemiBold"/>
+
+                <Border Background="#343042"
+                        CornerRadius="10"
+                        Padding="16">
+                    <ItemsControl ItemsSource="{Binding Players}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#2C2737"
+                                        CornerRadius="8"
+                                        Padding="12"
+                                        Margin="0,0,0,10">
+                                    <TextBlock Text="{Binding Name}"
+                                               Foreground="White"
+                                               FontSize="15"/>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+                <Button Content="READY"
+                        Command="{Binding ReadyCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="#725AC1"
+                        Foreground="White"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Height="52"
+                        CornerRadius="10"/>
+
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="#9BA1AD"
+                           FontSize="12"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
