@@ -1,86 +1,29 @@
-﻿using Avalonia;
-using System;
-using System.Windows.Input;
-using Avalonia.Controls.ApplicationLifetimes;
-using TypeRacer.Client.Services;
-using TypeRacer.Client.Views;
+﻿using TypeRacer.Client.ViewModels;
 
 namespace TypeRacer.Client.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private string _playerName = string.Empty;
-    private string _roomCode = string.Empty;
-    private string _statusMessage = "Enter your details to join a room.";
+    private ViewModelBase? _currentPage;
 
-    public string PlayerName
+    public ViewModelBase? CurrentPage
     {
-        get => _playerName;
-        set => SetField(ref _playerName, value);
+        get => _currentPage;
+        set => SetField(ref _currentPage, value);
     }
-
-    public string RoomCode
-    {
-        get => _roomCode;
-        set => SetField(ref _roomCode, value);
-    }
-
-    public string StatusMessage
-    {
-        get => _statusMessage;
-        set => SetField(ref _statusMessage, value);
-    }
-
-    public ICommand JoinRoomCommand { get; }
 
     public MainWindowViewModel()
     {
-        JoinRoomCommand = new RelayCommand(JoinRoom);
+        CurrentPage = new JoinViewModel(this);
     }
 
-    private void JoinRoom()
+    public void ShowLobby(string playerName, string roomCode)
     {
-        if (string.IsNullOrWhiteSpace(PlayerName))
-        {
-            StatusMessage = "Please enter a player name.";
-            return;
-        }
+        CurrentPage = new LobbyViewModel(this, playerName, roomCode);
+    }
 
-        if (string.IsNullOrWhiteSpace(RoomCode))
-        {
-            StatusMessage = "Please enter a room code.";
-            return;
-        }
-
-        try
-        {
-            NetworkClient networkClient = new NetworkClient();
-            var roomState = networkClient.JoinRoom(PlayerName, RoomCode);
-
-            if (roomState == null)
-            {
-                StatusMessage = "Failed to join room.";
-                return;
-            }
-
-            //create lobby room
-            LobbyView lobbyView = new LobbyView
-            {
-                DataContext = new LobbyViewModel(roomState),
-            };
-            //open the lobby window
-            lobbyView.Show();
-
-            //close the join window
-            if (Avalonia.Application.Current?.ApplicationLifetime is
-                Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow?.Close();
-            }
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = $"Error: {ex.Message}";
-        }
+    public void ShowRace(int countdown)
+    {
+        CurrentPage = new RaceViewModel(countdown);
     }
 }

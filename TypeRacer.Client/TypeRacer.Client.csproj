@@ -29,4 +29,10 @@
     <ItemGroup>
       <ProjectReference Include="..\TypeRacer.Shared\TypeRacer.Shared.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\JoinView.axaml.cs">
+        <DependentUpon>JoinView.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>

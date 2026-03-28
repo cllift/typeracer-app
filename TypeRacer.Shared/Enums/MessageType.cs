@@ -5,5 +5,7 @@ namespace TypeRacer.Shared.Enums;
 public enum MessageType
 {
     JoinRoom,
-    RoomState
+    RoomState,
+    PlayerReady,
+    RaceStarting
 }

@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 using TypeRacer.Client.Services;
 using TypeRacer.Shared.Messages;
 
@@ -7,7 +9,11 @@ namespace TypeRacer.Client.ViewModels;
 
 public class LobbyViewModel : ViewModelBase
 {
-    private string _roomCodeDisplay = string.Empty;
+    private readonly MainWindowViewModel _mainWindow;
+    private readonly string _playerName;
+    private readonly string _roomCode;
+
+    private string _roomCodeDisplay;
     private string _statusMessage = "Waiting for other players...";
 
     public string RoomCodeDisplay
@@ -22,30 +28,59 @@ public class LobbyViewModel : ViewModelBase
         set => SetField(ref _statusMessage, value);
     }
 
-    // This holds the current list of players shown in the lobby.
     public ObservableCollection<PlayerInfo> Players { get; } = new();
 
     public ICommand ReadyCommand { get; }
 
-    public LobbyViewModel(RoomStateMessage roomState)
+    public LobbyViewModel(MainWindowViewModel mainWindow, string playerName, string roomCode)
     {
-        // Show the room code at the top of the lobby.
-        RoomCodeDisplay = $"Room Code: {roomState.RoomCode}";
+        _mainWindow = mainWindow;
+        _playerName = playerName;
+        _roomCode = roomCode;
 
-        // Add all players returned by the server.
-        foreach (PlayerInfo player in roomState.Players)
+        _roomCodeDisplay = $"Room Code: {roomCode}";
+
+        Players.Add(new PlayerInfo
         {
-            Players.Add(player);
-        }
+            Name = playerName,
+            IsReady = false
+        });
 
-        // Hook up the Ready button.
-        ReadyCommand = new RelayCommand(OnReadyClicked);
+        ReadyCommand = new RelayCommand(async () => await OnReadyClickedAsync());
+
+        App.NetworkClient.RoomStateReceived += OnRoomStateReceived;
+        App.NetworkClient.RaceStartingReceived += OnRaceStartingReceived;
     }
 
-    private void OnReadyClicked()
+    private void OnRoomStateReceived(RoomStateMessage roomState)
     {
-        // This is temporary for now.
-        // Later this will send a PlayerReadyMessage to the server.
+        Dispatcher.UIThread.Post(() =>
+        {
+            RoomCodeDisplay = $"Room Code: {roomState.RoomCode}";
+
+            Players.Clear();
+
+            foreach (PlayerInfo player in roomState.Players)
+            {
+                Players.Add(player);
+            }
+
+            StatusMessage = $"Players in room: {roomState.Players.Count}";
+        });
+    }
+
+    private async Task OnReadyClickedAsync()
+    {
         StatusMessage = "You are ready. Waiting for other players...";
+        await App.NetworkClient.SendReadyAsync(_playerName, _roomCode);
+    }
+
+    private void OnRaceStartingReceived(RaceStartingMessage raceStarting)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            StatusMessage = "Race starting...";
+            _mainWindow.ShowRace(raceStarting.CountdownSeconds);
+        });
     }
 }

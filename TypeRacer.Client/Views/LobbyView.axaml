@@ -1,9 +1,8 @@
-<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:TypeRacer.Client.ViewModels"
         x:Class="TypeRacer.Client.Views.LobbyView"
         x:DataType="vm:LobbyViewModel"
-        Title="Lobby"
         Background="#3E3C4E"
         Width="900"
         Height="600">
@@ -46,9 +45,19 @@
                                         CornerRadius="8"
                                         Padding="12"
                                         Margin="0,0,0,10">
-                                    <TextBlock Text="{Binding Name}"
-                                               Foreground="White"
-                                               FontSize="15"/>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{Binding Name}"
+                                                   Foreground="White"
+                                                   FontSize="15"
+                                                   VerticalAlignment="Center"/>
+
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding IsReady}"
+                                                   Foreground="#9BA1AD"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -75,4 +84,4 @@
             </StackPanel>
         </Border>
     </Grid>
-</Window>
+</UserControl>

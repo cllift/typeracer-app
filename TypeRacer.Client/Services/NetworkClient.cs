@@ -1,6 +1,7 @@
 using System;
+using System.IO;
 using System.Net.Sockets;
-using System.Text;
+using System.Threading.Tasks;
 using TypeRacer.Shared.Enums;
 using TypeRacer.Shared.Messages;
 using TypeRacer.Shared.Networking;
@@ -9,86 +10,139 @@ namespace TypeRacer.Client.Services;
 
 public class NetworkClient
 {
-    /// <summary>
-    /// Connects to the server, sends a JoinRoom request,
-    /// then returns the room state response.
-    /// </summary>
-    public RoomStateMessage? JoinRoom(string playerName, string roomCode)
+    private TcpClient? _client;
+    private StreamReader? _reader;
+    private StreamWriter? _writer;
+
+    public event Action<RoomStateMessage>? RoomStateReceived;
+    public event Action<RaceStartingMessage>? RaceStartingReceived;
+
+    public async Task<bool> ConnectAsync()
     {
         try
         {
+            if (_client != null && _client.Connected)
+            {
+                return true;
+            }
+
             Console.WriteLine("CLIENT: Creating TcpClient...");
-            using TcpClient client = new TcpClient();
+            _client = new TcpClient();
 
             Console.WriteLine("CLIENT: Connecting to iestyn.com:50000...");
-            client.Connect("iestyn.com", 50000);
+            await _client.ConnectAsync("iestyn.com", 50000);
+
             Console.WriteLine("CLIENT: Connected.");
 
-            using NetworkStream stream = client.GetStream();
-            Console.WriteLine("CLIENT: Stream acquired.");
+            NetworkStream stream = _client.GetStream();
 
-            // Build the join-room message.
-            JoinRoomMessage joinRoomMessage = new JoinRoomMessage
+            _reader = new StreamReader(stream);
+            _writer = new StreamWriter(stream)
             {
-                PlayerName = playerName,
-                RoomCode = roomCode
+                AutoFlush = true
             };
 
-            // Wrap it in an envelope so the server knows the type.
-            MessageEnvelope envelope = new MessageEnvelope
-            {
-                Type = MessageType.JoinRoom,
-                Payload = MessageSerialiser.Serialize(joinRoomMessage)
-            };
+            _ = Task.Run(ListenLoopAsync);
 
-            // Serialize and send.
-            string json = MessageSerialiser.Serialize(envelope);
-            Console.WriteLine($"CLIENT: JSON = {json}");
-
-            byte[] data = Encoding.UTF8.GetBytes(json);
-            Console.WriteLine($"CLIENT: Sending {data.Length} bytes...");
-
-            stream.Write(data, 0, data.Length);
-            stream.Flush();
-
-            Console.WriteLine("CLIENT: JoinRoom message sent.");
-            Console.WriteLine("CLIENT: Waiting for room state response...");
-
-            // Read server response.
-            byte[] buffer = new byte[4096];
-            int bytesRead = stream.Read(buffer, 0, buffer.Length);
-
-            Console.WriteLine($"CLIENT: bytesRead = {bytesRead}");
-
-            if (bytesRead == 0)
-            {
-                Console.WriteLine("CLIENT: Server closed the connection before sending a response.");
-                return null;
-            }
-
-            string responseJson = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            Console.WriteLine($"CLIENT: Received raw JSON: {responseJson}");
-
-            // Deserialize outer envelope.
-            MessageEnvelope responseEnvelope =
-                MessageSerialiser.Deserialize<MessageEnvelope>(responseJson);
-
-            if (responseEnvelope.Type != MessageType.RoomState)
-            {
-                Console.WriteLine($"CLIENT: Unexpected response type: {responseEnvelope.Type}");
-                return null;
-            }
-
-            // Deserialize room state payload.
-            RoomStateMessage roomState =
-                MessageSerialiser.Deserialize<RoomStateMessage>(responseEnvelope.Payload);
-
-            return roomState;
+            return true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"CLIENT: JoinRoom failed: {ex.Message}");
-            return null;
+            Console.WriteLine($"CLIENT: Connection failed: {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task JoinRoomAsync(string playerName, string roomCode)
+    {
+        if (_writer == null)
+        {
+            throw new InvalidOperationException("Client is not connected.");
+        }
+
+        JoinRoomMessage joinRoomMessage = new JoinRoomMessage
+        {
+            PlayerName = playerName,
+            RoomCode = roomCode
+        };
+
+        MessageEnvelope envelope = new MessageEnvelope
+        {
+            Type = MessageType.JoinRoom,
+            Payload = MessageSerialiser.Serialize(joinRoomMessage)
+        };
+
+        string json = MessageSerialiser.Serialize(envelope);
+        await _writer.WriteLineAsync(json);
+    }
+
+    public async Task SendReadyAsync(string playerName, string roomCode)
+    {
+        if (_writer == null)
+        {
+            throw new InvalidOperationException("Client is not connected.");
+        }
+
+        PlayerReadyMessage readyMessage = new PlayerReadyMessage
+        {
+            PlayerName = playerName,
+            RoomCode = roomCode
+        };
+
+        MessageEnvelope envelope = new MessageEnvelope
+        {
+            Type = MessageType.PlayerReady,
+            Payload = MessageSerialiser.Serialize(readyMessage)
+        };
+
+        string json = MessageSerialiser.Serialize(envelope);
+        Console.WriteLine($"CLIENT: Sending PlayerReady = {json}");
+
+        await _writer.WriteLineAsync(json);
+    }
+
+    private async Task ListenLoopAsync()
+    {
+        try
+        {
+            if (_reader == null)
+            {
+                return;
+            }
+
+            while (true)
+            {
+                string? line = await _reader.ReadLineAsync();
+
+                if (line == null)
+                {
+                    Console.WriteLine("CLIENT: Server disconnected.");
+                    break;
+                }
+
+                Console.WriteLine($"CLIENT: Received = {line}");
+
+                MessageEnvelope envelope = MessageSerialiser.Deserialize<MessageEnvelope>(line);
+
+                if (envelope.Type == MessageType.RoomState)
+                {
+                    RoomStateMessage roomState =
+                        MessageSerialiser.Deserialize<RoomStateMessage>(envelope.Payload);
+
+                    RoomStateReceived?.Invoke(roomState);
+                }
+                else if (envelope.Type == MessageType.RaceStarting)
+                {
+                    RaceStartingMessage raceStarting =
+                        MessageSerialiser.Deserialize<RaceStartingMessage>(envelope.Payload);
+
+                    RaceStartingReceived?.Invoke(raceStarting);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"CLIENT: Listen loop error: {ex.Message}");
         }
     }
 }

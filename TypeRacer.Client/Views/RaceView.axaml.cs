@@ -2,10 +2,10 @@ using Avalonia.Controls;
 
 namespace TypeRacer.Client.Views;
 
-public partial class LobbyView : UserControl
+public partial class RaceView : UserControl
 {
-    public LobbyView()
+    public RaceView()
     {
         InitializeComponent();
     }
-}   
+}

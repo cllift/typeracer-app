@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TypeRacer.Client.ViewModels"
+        x:Class="TypeRacer.Client.Views.RaceView"
+        x:DataType="vm:RaceViewModel"
+        Background="#3E3C4E"
+        Width="900"
+        Height="600">
+
+    <Grid>
+        <Border Width="500"
+                Padding="40"
+                CornerRadius="20"
+                Background="#231F2E"
+                BorderBrush="#3FFFFFFF"
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+            <StackPanel Spacing="24" HorizontalAlignment="Center">
+                <TextBlock Text="RACE STARTING"
+                           Foreground="#725AC1"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="{Binding CountdownText}"
+                           Foreground="White"
+                           FontSize="72"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="#9BA1AD"
+                           FontSize="14"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
