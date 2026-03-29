@@ -9,7 +9,7 @@
         <Border Background="#0E0B1A"/>
         
         <!--faded background word-->
-        <TextBlock Text="VELOCITY"
+        <TextBlock Text="DAISY"
                    FontSize="100"
                    FontWeight="Black"
                    FontStyle="Italic"
@@ -33,10 +33,11 @@
                 Background="#231F2E"
                 BorderBrush="#3FFFFFFF"
                 BorderThickness="1"
+                Opacity="50"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
 
-            <StackPanel Spacing="18">
+            <StackPanel Spacing="12">
                 <Image Source="avares://TypeRacer.Client/Assets/Images/TypeRacer.png"
                        Width="180"
                        Height="180"
@@ -66,7 +67,7 @@
                                  Height="48"
                                  Background="#343042"
                                  BorderThickness="0"
-                                 Foreground="White"
+                                 Foreground="Black"
                                  CornerRadius="8"
                                  VerticalContentAlignment="Center"
                                  Padding="12,0"/>
@@ -82,7 +83,7 @@
                                  Height="48"
                                  Background="#343042"
                                  BorderThickness="0"
-                                 Foreground="White"
+                                 Foreground="Black"
                                  CornerRadius="8"
                                  VerticalContentAlignment="Center"
                                  Padding="12,0"/>

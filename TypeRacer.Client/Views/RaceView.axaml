@@ -1,14 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:TypeRacer.Client.ViewModels"
-        x:Class="TypeRacer.Client.Views.RaceView"
-        x:DataType="vm:RaceViewModel"
-        Background="#3E3C4E"
-        Width="900"
-        Height="600">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TypeRacer.Client.ViewModels"
+             x:Class="TypeRacer.Client.Views.RaceView"
+             x:DataType="vm:RaceViewModel">
 
-    <Grid>
-        <Border Width="500"
+    <Grid Background="#3E3C4E">
+        <Border Width="650"
                 Padding="40"
                 CornerRadius="20"
                 Background="#231F2E"
@@ -17,24 +14,67 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
 
-            <StackPanel Spacing="24" HorizontalAlignment="Center">
-                <TextBlock Text="RACE STARTING"
-                           Foreground="#725AC1"
-                           FontSize="30"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"/>
+            <Grid>
+                <StackPanel Spacing="24"
+                            IsVisible="{Binding IsCountdownVisible}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
 
-                <TextBlock Text="{Binding CountdownText}"
-                           Foreground="White"
-                           FontSize="72"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"/>
+                    <TextBlock Text="RACE STARTING"
+                               Foreground="#725AC1"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
 
-                <TextBlock Text="{Binding StatusMessage}"
-                           Foreground="#9BA1AD"
-                           FontSize="14"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
+                    <TextBlock Text="{Binding CountdownText}"
+                               Foreground="White"
+                               FontSize="72"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Foreground="#9BA1AD"
+                               FontSize="14"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Spacing="24"
+                            IsVisible="{Binding IsRaceVisible}">
+
+                    <TextBlock Text="TYPE RACE"
+                               Foreground="#725AC1"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding RaceText}"
+                               Foreground="White"
+                               FontSize="24"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+
+                    <TextBox Text="{Binding TypedText}"
+                             Watermark="Start typing here..."
+                             Height="52"
+                             Background="#343042"
+                             BorderThickness="0"
+                             Foreground="Black"
+                             FontSize="18"
+                             VerticalContentAlignment="Center"
+                             Padding="12,0"/>
+
+                    <TextBlock Text="{Binding WpmText}"
+                               Foreground="White"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Foreground="#9BA1AD"
+                               FontSize="14"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>
