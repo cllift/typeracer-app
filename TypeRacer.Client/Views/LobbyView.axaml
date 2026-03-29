@@ -1,87 +1,106 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:TypeRacer.Client.ViewModels"
-        x:Class="TypeRacer.Client.Views.LobbyView"
-        x:DataType="vm:LobbyViewModel"
-        Background="#3E3C4E"
-        Width="900"
-        Height="600">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TypeRacer.Client.ViewModels"
+             x:Class="TypeRacer.Client.Views.LobbyView"
+             x:DataType="vm:LobbyViewModel">
 
-    <Grid>
-        <Border Width="500"
-                Padding="40"
-                CornerRadius="20"
-                Background="#231F2E"
-                BorderBrush="#3FFFFFFF"
-                BorderThickness="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+    <Grid Background="#0B0A10">
+        <Canvas IsHitTestVisible="False">
+            <Ellipse Width="800" Height="800" Fill="#0D725AC1" Margin="-300,-400,0,0">
+                <Ellipse.Effect><BlurEffect Radius="100"/></Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
+
+        <StackPanel MaxWidth="600" 
+                    Spacing="40" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center">
+
+            <StackPanel Spacing="12">
+                <TextBlock Text="WAITING FOR PLAYERS" 
+                           Foreground="#725AC1" 
+                           FontSize="12" 
+                           FontWeight="Black" 
+                           LetterSpacing="5" 
+                           HorizontalAlignment="Center"/>
+                
+                <Border Background="#1AFFFFFF" 
+                        CornerRadius="8" 
+                        Padding="16,8" 
+                        HorizontalAlignment="Center"
+                        BorderBrush="#10FFFFFF"
+                        BorderThickness="1">
+                    <TextBlock Text="{Binding RoomCodeDisplay}" 
+                               Foreground="White" 
+                               FontSize="24" 
+                               FontWeight="Light"
+                               LetterSpacing="2"/>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Spacing="20">
+                <TextBlock Text="CURRENT PLAYERS" 
+                           Foreground="#333145" 
+                           FontSize="11" 
+                           FontWeight="Bold" 
+                           LetterSpacing="2"/>
+
+                <ItemsControl ItemsSource="{Binding Players}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="0,0,0,16" 
+                                    Margin="0,0,0,16" 
+                                    BorderBrush="#0DFFFFFF" 
+                                    BorderThickness="0,0,0,1">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <Ellipse Width="8" Height="8" Fill="#725AC1" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Name}" 
+                                                   Foreground="White" 
+                                                   FontSize="18" 
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Column="1" 
+                                            Padding="12,4" 
+                                            CornerRadius="6" 
+                                            Background="#12111A"
+                                            BorderBrush="#1AFFFFFF"
+                                            BorderThickness="1">
+                                        <TextBlock Text="{Binding IsReady}" 
+                                                   Foreground="#8E8C9E" 
+                                                   FontSize="11" 
+                                                   FontWeight="Bold"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
             <StackPanel Spacing="24">
-
-                <TextBlock Text="LOBBY"
-                           Foreground="#725AC1"
-                           FontSize="30"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"/>
-
-                <TextBlock Text="{Binding RoomCodeDisplay}"
-                           Foreground="White"
-                           FontSize="16"
-                           HorizontalAlignment="Center"/>
-
-                <TextBlock Text="PLAYERS"
-                           Foreground="#9BA1AD"
-                           FontSize="12"
-                           FontWeight="SemiBold"/>
-
-                <Border Background="#343042"
-                        CornerRadius="10"
-                        Padding="16">
-                    <ItemsControl ItemsSource="{Binding Players}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Background="#2C2737"
-                                        CornerRadius="8"
-                                        Padding="12"
-                                        Margin="0,0,0,10">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBlock Text="{Binding Name}"
-                                                   Foreground="White"
-                                                   FontSize="15"
-                                                   VerticalAlignment="Center"/>
-
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding IsReady}"
-                                                   Foreground="#9BA1AD"
-                                                   FontSize="13"
-                                                   FontWeight="SemiBold"
-                                                   VerticalAlignment="Center"/>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Border>
-
-                <Button Content="READY"
-                        Command="{Binding ReadyCommand}"
+                <Button Command="{Binding ReadyCommand}"
+                        Classes="Primary"
+                        Height="60"
+                        Background="#725AC1"
+                        CornerRadius="12"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="#725AC1"
-                        Foreground="White"
-                        FontSize="15"
-                        FontWeight="SemiBold"
-                        Height="52"
-                        CornerRadius="10"/>
+                        VerticalContentAlignment="Center">
+                    <TextBlock Text="READY" 
+                               Foreground="White" 
+                               FontWeight="Bold" 
+                               LetterSpacing="2"/>
+                </Button>
 
-                <TextBlock Text="{Binding StatusMessage}"
-                           Foreground="#9BA1AD"
-                           FontSize="12"
-                           TextAlignment="Center"
-                           TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding StatusMessage}" 
+                           Foreground="#4A4860" 
+                           FontSize="13" 
+                           TextAlignment="Center" 
+                           FontStyle="Italic"/>
             </StackPanel>
-        </Border>
+
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -16,31 +16,22 @@ public class NetworkClient
 
     public event Action<RoomStateMessage>? RoomStateReceived;
     public event Action<RaceStartingMessage>? RaceStartingReceived;
+    public event Action<ProgressUpdateMessage>? ProgressUpdateReceived;
+    public event Action<RaceResultsMessage>? RaceResultsReceived;
 
     public async Task<bool> ConnectAsync()
     {
         try
         {
             if (_client != null && _client.Connected)
-            {
                 return true;
-            }
 
-            Console.WriteLine("CLIENT: Creating TcpClient...");
             _client = new TcpClient();
-
-            Console.WriteLine("CLIENT: Connecting to iestyn.com:50000...");
             await _client.ConnectAsync("iestyn.com", 50000);
 
-            Console.WriteLine("CLIENT: Connected.");
-
             NetworkStream stream = _client.GetStream();
-
             _reader = new StreamReader(stream);
-            _writer = new StreamWriter(stream)
-            {
-                AutoFlush = true
-            };
+            _writer = new StreamWriter(stream) { AutoFlush = true };
 
             _ = Task.Run(ListenLoopAsync);
 
@@ -56,9 +47,7 @@ public class NetworkClient
     public async Task JoinRoomAsync(string playerName, string roomCode)
     {
         if (_writer == null)
-        {
             throw new InvalidOperationException("Client is not connected.");
-        }
 
         JoinRoomMessage joinRoomMessage = new JoinRoomMessage
         {
@@ -72,16 +61,13 @@ public class NetworkClient
             Payload = MessageSerialiser.Serialize(joinRoomMessage)
         };
 
-        string json = MessageSerialiser.Serialize(envelope);
-        await _writer.WriteLineAsync(json);
+        await _writer.WriteLineAsync(MessageSerialiser.Serialize(envelope));
     }
 
     public async Task SendReadyAsync(string playerName, string roomCode)
     {
         if (_writer == null)
-        {
             throw new InvalidOperationException("Client is not connected.");
-        }
 
         PlayerReadyMessage readyMessage = new PlayerReadyMessage
         {
@@ -95,10 +81,30 @@ public class NetworkClient
             Payload = MessageSerialiser.Serialize(readyMessage)
         };
 
-        string json = MessageSerialiser.Serialize(envelope);
-        Console.WriteLine($"CLIENT: Sending PlayerReady = {json}");
+        await _writer.WriteLineAsync(MessageSerialiser.Serialize(envelope));
+    }
 
-        await _writer.WriteLineAsync(json);
+    public async Task SendProgressAsync(string playerName, string roomCode, double progressPercent, int wpm, bool isFinished)
+    {
+        if (_writer == null)
+            throw new InvalidOperationException("Client is not connected.");
+
+        ProgressUpdateMessage progressMessage = new ProgressUpdateMessage
+        {
+            PlayerName = playerName,
+            RoomCode = roomCode,
+            ProgressPercent = progressPercent,
+            Wpm = wpm,
+            IsFinished = isFinished
+        };
+
+        MessageEnvelope envelope = new MessageEnvelope
+        {
+            Type = MessageType.ProgressUpdate,
+            Payload = MessageSerialiser.Serialize(progressMessage)
+        };
+
+        await _writer.WriteLineAsync(MessageSerialiser.Serialize(envelope));
     }
 
     private async Task ListenLoopAsync()
@@ -106,9 +112,7 @@ public class NetworkClient
         try
         {
             if (_reader == null)
-            {
                 return;
-            }
 
             while (true)
             {
@@ -119,8 +123,6 @@ public class NetworkClient
                     Console.WriteLine("CLIENT: Server disconnected.");
                     break;
                 }
-
-                Console.WriteLine($"CLIENT: Received = {line}");
 
                 MessageEnvelope envelope = MessageSerialiser.Deserialize<MessageEnvelope>(line);
 
@@ -137,6 +139,20 @@ public class NetworkClient
                         MessageSerialiser.Deserialize<RaceStartingMessage>(envelope.Payload);
 
                     RaceStartingReceived?.Invoke(raceStarting);
+                }
+                else if (envelope.Type == MessageType.ProgressUpdate)
+                {
+                    ProgressUpdateMessage progressUpdate =
+                        MessageSerialiser.Deserialize<ProgressUpdateMessage>(envelope.Payload);
+
+                    ProgressUpdateReceived?.Invoke(progressUpdate);
+                }
+                else if (envelope.Type == MessageType.RaceResults)
+                {
+                    RaceResultsMessage results =
+                        MessageSerialiser.Deserialize<RaceResultsMessage>(envelope.Payload);
+
+                    RaceResultsReceived?.Invoke(results);
                 }
             }
         }

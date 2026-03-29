@@ -4,130 +4,110 @@
              x:Class="TypeRacer.Client.Views.JoinView"
              x:DataType="vm:JoinViewModel">
 
-    <Grid>
-        <!-- Base background -->
-        <Border Background="#0E0B1A"/>
-        
-        <!--faded background word-->
+    <Grid Background="#0B0A10">
+        <Canvas IsHitTestVisible="False">
+            <Ellipse Width="800" Height="800" Fill="#0D725AC1" Margin="-200,-300,0,0">
+                <Ellipse.Effect><BlurEffect Radius="120"/></Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
+
         <TextBlock Text="DAISY"
-                   FontSize="100"
+                   FontSize="180"
                    FontWeight="Black"
                    FontStyle="Italic"
-                   Foreground="#14FFFFFF"
+                   Foreground="#05FFFFFF"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top"
-                   Margin="25,150,0,0"
-                   IsHitTestVisible="False"
-                   RenderTransformOrigin="0.5,0.5">
-
+                   Margin="-20,100,0,0"
+                   IsHitTestVisible="False">
             <TextBlock.RenderTransform>
-                <RotateTransform Angle="-15"/>
+                <RotateTransform Angle="-10"/>
             </TextBlock.RenderTransform>
-
         </TextBlock>
         
-        <!-- Main card -->
-        <Border Width="420"
-                Padding="24"
-                CornerRadius="20"
-                Background="#231F2E"
-                BorderBrush="#3FFFFFFF"
-                BorderThickness="1"
-                Opacity="50"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+        <Grid RowDefinitions="Auto, *, Auto" 
+              MaxWidth="440" 
+              Margin="30,20"
+              VerticalAlignment="Stretch"
+              HorizontalAlignment="Center">
 
-            <StackPanel Spacing="12">
+            <Grid Grid.Row="0" Margin="0,10,0,10">
+                <Ellipse Width="160" Height="160" Fill="#20725AC1">
+                    <Ellipse.Effect><BlurEffect Radius="150"/></Ellipse.Effect>
+                </Ellipse>
                 <Image Source="avares://TypeRacer.Client/Assets/Images/TypeRacer.png"
-                       Width="180"
-                       Height="180"
+                       Width="200"
+                       Height="200"
                        HorizontalAlignment="Center"
-                       Stretch="Uniform"/>
+                       Stretch="Uniform"
+                       Opacity="0.95"/>
+            </Grid>
+            
+            <StackPanel Grid.Row="1" Spacing="15" VerticalAlignment="Center">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="PLAYER NAME"
+                               Foreground="#725AC1"
+                               FontSize="10"
+                               FontWeight="Black"
+                               LetterSpacing="3"/>
+                    <TextBox Text="{Binding PlayerName}"
+                             Watermark="Username"
+                             Height="54"
+                             Background="#12111A"
+                             BorderBrush="#1AFFFFFF"
+                             BorderThickness="1"
+                             Foreground="White"
+                             CornerRadius="12"
+                             VerticalContentAlignment="Center"
+                             Padding="16,0"/>
+                </StackPanel>
 
                 <StackPanel Spacing="6">
-                    <TextBlock Text="JOIN ROOM"
-                               Foreground="White"
-                               FontSize="26"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                    <Separator Background="#725AC1"
-                               Width="40"
-                               Height="3"
-                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="ROOM CODE"
+                               Foreground="#725AC1"
+                               FontSize="10"
+                               FontWeight="Black"
+                               LetterSpacing="3"/>
+                    <TextBox Text="{Binding RoomCode}"
+                             Watermark="Room Code"
+                             Height="54"
+                             Background="#12111A"
+                             BorderBrush="#1AFFFFFF"
+                             BorderThickness="1"
+                             Foreground="White"
+                             CornerRadius="12"
+                             VerticalContentAlignment="Center"
+                             Padding="16,0"/>
                 </StackPanel>
+            </StackPanel>
 
-                <StackPanel Spacing="14">
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="PLAYER NAME"
-                                   Foreground="#9BA1AD"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding PlayerName}"
-                                 Watermark="Enter Username"
-                                 Height="48"
-                                 Background="#343042"
-                                 BorderThickness="0"
-                                 Foreground="Black"
-                                 CornerRadius="8"
-                                 VerticalContentAlignment="Center"
-                                 Padding="12,0"/>
-                    </StackPanel>
-
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="ROOM CODE"
-                                   Foreground="#9BA1AD"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding RoomCode}"
-                                 Watermark="Enter Room Code"
-                                 Height="48"
-                                 Background="#343042"
-                                 BorderThickness="0"
-                                 Foreground="Black"
-                                 CornerRadius="8"
-                                 VerticalContentAlignment="Center"
-                                 Padding="12,0"/>
-                    </StackPanel>
-                </StackPanel>
-
-                <Button Content="JOIN ROOM"
-                        Command="{Binding JoinRoomCommand}"
+            <StackPanel Grid.Row="2" Spacing="15" Margin="0,10,0,20">
+                <Button Command="{Binding JoinRoomCommand}"
+                        Classes="Primary"
+                        Height="58"
+                        Background="#725AC1"
+                        CornerRadius="12"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="#725AC1"
-                        Foreground="White"
-                        FontSize="15"
-                        FontWeight="SemiBold"
-                        Height="52"
-                        CornerRadius="10">
+                        VerticalContentAlignment="Center">
+                    <TextBlock Text="JOIN ROOM" 
+                               Foreground="White" 
+                               FontWeight="Heavy" 
+                               LetterSpacing="2"/>
+                    
                     <Button.Styles>
-                        <Style Selector="Button">
-                            <Setter Property="Transitions">
-                                <Transitions>
-                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
-                                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
-                                </Transitions>
-                            </Setter>
-                        </Style>
-
-                        <Style Selector="Button:pointerover">
-                            <Setter Property="Background" Value="#8D79D3"/>
-                            <Setter Property="RenderTransform" Value="scale(1.02)"/>
-                        </Style>
-
-                        <Style Selector="Button:pressed">
-                            <Setter Property="RenderTransform" Value="scale(0.97)"/>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#8A72D9"/>
                         </Style>
                     </Button.Styles>
                 </Button>
 
                 <TextBlock Text="{Binding StatusMessage}"
-                           Foreground="#9BA1AD"
-                           FontSize="12"
+                           Foreground="#4A4860"
+                           FontSize="11"
                            TextAlignment="Center"
-                           TextWrapping="Wrap"/>
+                           FontStyle="Italic"/>
             </StackPanel>
-        </Border>
+        </Grid>
     </Grid>
 </UserControl>

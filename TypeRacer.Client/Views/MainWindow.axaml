@@ -8,6 +8,6 @@
         Width="900"
         Height="600">
 
-    <ContentControl Content="{Binding CurrentPage}" />
+    <ContentControl Content="{Binding CurrentViewModel}" />
 
 </Window>

@@ -54,6 +54,9 @@ public class LobbyViewModel : ViewModelBase
 
     private void OnRoomStateReceived(RoomStateMessage roomState)
     {
+        if (roomState.RoomCode != _roomCode)
+            return;
+
         Dispatcher.UIThread.Post(() =>
         {
             RoomCodeDisplay = $"Room Code: {roomState.RoomCode}";
@@ -77,10 +80,13 @@ public class LobbyViewModel : ViewModelBase
 
     private void OnRaceStartingReceived(RaceStartingMessage raceStarting)
     {
+        if (raceStarting.RoomCode != _roomCode)
+            return;
+
         Dispatcher.UIThread.Post(() =>
         {
             StatusMessage = "Race starting...";
-            _mainWindow.ShowRace(raceStarting.CountdownSeconds);
+            _mainWindow.ShowRace(_playerName, _roomCode, raceStarting.CountdownSeconds, raceStarting.RaceText);
         });
     }
 }

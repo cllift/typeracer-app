@@ -14,6 +14,7 @@ public class ViewLocator : IDataTemplate
             JoinViewModel => new JoinView(),
             LobbyViewModel => new LobbyView(),
             RaceViewModel => new RaceView(),
+            ResultsViewModel => new ResultsView(),
             _ => new TextBlock { Text = $"No view found for {data?.GetType().Name}" }
         };
     }

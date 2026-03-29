@@ -1,29 +1,34 @@
-﻿using TypeRacer.Client.ViewModels;
+﻿using System.Collections.Generic;
+using TypeRacer.Shared.Messages;
 
 namespace TypeRacer.Client.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private ViewModelBase? _currentPage;
+    private ViewModelBase _currentViewModel = null!;
 
-    public ViewModelBase? CurrentPage
+    public ViewModelBase CurrentViewModel
     {
-        get => _currentPage;
-        set => SetField(ref _currentPage, value);
+        get => _currentViewModel;
+        set => SetField(ref _currentViewModel, value);
     }
 
     public MainWindowViewModel()
     {
-        CurrentPage = new JoinViewModel(this);
+        CurrentViewModel = new JoinViewModel(this);
     }
 
     public void ShowLobby(string playerName, string roomCode)
     {
-        CurrentPage = new LobbyViewModel(this, playerName, roomCode);
+        CurrentViewModel = new LobbyViewModel(this, playerName, roomCode);
     }
 
-    public void ShowRace(int countdown)
+    public void ShowRace(string playerName, string roomCode, int countdown, string raceText)
     {
-        CurrentPage = new RaceViewModel(countdown);
+        CurrentViewModel = new RaceViewModel(this, playerName, roomCode, countdown, raceText);
+    }
+    public void ShowResults(string playerName, string roomCode, List<RaceResultEntry> results)
+    {
+        CurrentViewModel = new ResultsViewModel(this, playerName, roomCode, results);
     }
 }

@@ -7,5 +7,7 @@ public enum MessageType
     JoinRoom,
     RoomState,
     PlayerReady,
-    RaceStarting
+    RaceStarting,
+    ProgressUpdate,
+    RaceResults
 }

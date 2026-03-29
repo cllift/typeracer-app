@@ -1,80 +1,126 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TypeRacer.Client.ViewModels"
+             xmlns:models="using:TypeRacer.Client.Models"
              x:Class="TypeRacer.Client.Views.RaceView"
              x:DataType="vm:RaceViewModel">
 
-    <Grid Background="#3E3C4E">
-        <Border Width="650"
-                Padding="40"
-                CornerRadius="20"
-                Background="#231F2E"
-                BorderBrush="#3FFFFFFF"
-                BorderThickness="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+    <UserControl.Styles>
+        <Style Selector="ProgressBar">
+            <Setter Property="Background" Value="#1A1A2E"/>
+            <Setter Property="Foreground" Value="#725AC1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Height" Value="4"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Value" Duration="0:0:0.4" Easing="CubicEaseOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
 
-            <Grid>
-                <StackPanel Spacing="24"
-                            IsVisible="{Binding IsCountdownVisible}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
+    <Grid Background="#0B0A10">
+        <Canvas IsHitTestVisible="False">
+            <Ellipse Width="800" Height="800" Fill="#0D725AC1" Margin="-300,-400,0,0">
+                <Ellipse.Effect><BlurEffect Radius="100"/></Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
 
-                    <TextBlock Text="RACE STARTING"
-                               Foreground="#725AC1"
-                               FontSize="30"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-
-                    <TextBlock Text="{Binding CountdownText}"
-                               Foreground="White"
-                               FontSize="72"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-
-                    <TextBlock Text="{Binding StatusMessage}"
-                               Foreground="#9BA1AD"
-                               FontSize="14"
-                               HorizontalAlignment="Center"/>
+        <StackPanel MaxWidth="1000" 
+                    Margin="60" 
+                    Spacing="60" 
+                    VerticalAlignment="Center">
+            
+            <Grid ColumnDefinitions="*, Auto">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="TYPE SPEED ARENA" 
+                               Foreground="#725AC1" 
+                               FontSize="14" 
+                               FontWeight="Black" 
+                               LetterSpacing="5"/>
+                    <TextBlock Text="{Binding StatusMessage}" 
+                               Foreground="#4A4860" 
+                               FontSize="16"/>
                 </StackPanel>
 
-                <StackPanel Spacing="24"
-                            IsVisible="{Binding IsRaceVisible}">
-
-                    <TextBlock Text="TYPE RACE"
-                               Foreground="#725AC1"
-                               FontSize="30"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-
-                    <TextBlock Text="{Binding RaceText}"
-                               Foreground="White"
-                               FontSize="24"
-                               TextWrapping="Wrap"
-                               TextAlignment="Center"/>
-
-                    <TextBox Text="{Binding TypedText}"
-                             Watermark="Start typing here..."
-                             Height="52"
-                             Background="#343042"
-                             BorderThickness="0"
-                             Foreground="Black"
-                             FontSize="18"
-                             VerticalContentAlignment="Center"
-                             Padding="12,0"/>
-
-                    <TextBlock Text="{Binding WpmText}"
-                               Foreground="White"
-                               FontSize="18"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Center"/>
-
-                    <TextBlock Text="{Binding StatusMessage}"
-                               Foreground="#9BA1AD"
-                               FontSize="14"
-                               HorizontalAlignment="Center"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="20">
+                    <StackPanel HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding WpmText}" 
+                                   Foreground="White" 
+                                   FontSize="32" 
+                                   FontWeight="Light"/>
+                        <TextBlock Text="WORDS PER MINUTE" 
+                                   Foreground="#4A4860" 
+                                   FontSize="10" 
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Right"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
-        </Border>
+
+            <Grid>
+                <ItemsControl ItemsSource="{Binding DisplayCharacters}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:RaceCharacterInfo">
+                            <Border Background="{Binding BackgroundColor}" 
+                                    CornerRadius="2"
+                                    Margin="0,4"> 
+                                <TextBlock Text="{Binding Character}" 
+                                           FontSize="34" 
+                                           FontFamily="Consolas, Monospace" 
+                                           Foreground="{Binding ForegroundColor}"
+                                           Padding="1,0"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+                <TextBox x:Name="HiddenInputBox"
+                         Text="{Binding TypedText}"
+                         Opacity="0" Width="0" Height="0"/>
+            </Grid>
+
+            <StackPanel Spacing="24">
+                <Border BorderBrush="#1AFFFFFF" BorderThickness="0,1,0,0" Padding="0,24,0,0">
+                    <TextBlock Text="LEADERBOARD" 
+                               Foreground="#333145" 
+                               FontSize="11" 
+                               FontWeight="Bold" 
+                               LetterSpacing="3"/>
+                </Border>
+
+                <ItemsControl ItemsSource="{Binding Opponents}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:OpponentProgressInfo">
+                            <Grid ColumnDefinitions="150, *, 100" Margin="0,0,0,20">
+                                <TextBlock Grid.Column="0" 
+                                           Text="{Binding Name}" 
+                                           Foreground="#8E8C9E" 
+                                           FontSize="15" 
+                                           VerticalAlignment="Center"/>
+                                
+                                <ProgressBar Grid.Column="1" 
+                                             Value="{Binding ProgressPercent}" 
+                                             VerticalAlignment="Center"
+                                             Margin="20,0"/>
+
+                                <TextBlock Grid.Column="2" 
+                                           Text="{Binding WpmText}" 
+                                           Foreground="#725AC1" 
+                                           FontSize="14" 
+                                           FontWeight="SemiBold"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>
