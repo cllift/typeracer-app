@@ -27,7 +27,7 @@ public class NetworkClient
                 return true;
 
             _client = new TcpClient();
-            await _client.ConnectAsync("iestyn.com", 50000);
+            await _client.ConnectAsync("10.101.54.192", 50000);
 
             NetworkStream stream = _client.GetStream();
             _reader = new StreamReader(stream);
